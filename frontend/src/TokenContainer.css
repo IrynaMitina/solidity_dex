@@ -1,0 +1,76 @@
+.token-container {
+    background-color: rgb(249, 249, 249);
+    border-radius: 16px;
+    color: rgb(125, 125, 125);
+    font-size: 14px;
+    font-weight: 500;
+    height: 120px;
+    line-height: 20px;
+    padding: 16px;
+    position: relative;
+  }
+  .input-token-amount::placeholder {
+    color: rgb(206, 206, 206);
+  }
+  .input-token-amount {
+    background-color: rgb(249, 249, 249);
+    filter: none;
+    opacity: 1;
+    transition: opacity 250ms ease-in-out 0s;
+    text-align: left;
+    font-size: 36px;
+    font-weight: 485;
+    max-height: 44px;
+    box-sizing: border-box;
+    border: 0px;
+    border: none transparent;
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    appearance: textfield;  
+  }
+  .token-logo {
+    width: 24px;
+    height: 24px;
+  }
+  .input-pannel {
+    margin-top: 5px;
+    display: flex;
+    flex-flow: row;
+  }
+  .input-amount {
+    display: flex; 
+    flex-grow: 1;
+    width: 0px;
+  }
+  .token-repr {
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background-color: white;
+    border: 1px solid rgba(34, 34, 34, 0.07);
+    border-radius: 18px;
+    padding: 4px 8px 4px 4px;
+    font-size: 20px;
+    font-weight: 485;
+    margin-left: 10px;
+  }
+  .token-repr span {
+    margin-left: 5px
+  }
+
+.balance-pannel {
+    margin-top: 12px;
+    width: 100%;
+  }
+  .balance-amount {
+    width: fit-content;
+    display: inline;
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    font-weight: 485;
+    font-size: 14px;
+  }
+  
