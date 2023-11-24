@@ -1,5 +1,9 @@
 import './TokenContainer.css'
 import React, { useState } from "react";
+import ethericon from './ETH.png';
+import dvticon from './DVT.jpg';
+
+const TOKENS = {eth: {icon: ethericon, symbol: "ETH"}, dvt: {icon: dvticon, symbol: "DVT"}}
 
 function TokenContainer(props) {
     const [timeoutIsSet, setTimeoutIsSet] = useState(false);
@@ -21,9 +25,9 @@ function TokenContainer(props) {
       <div class="token-container">
         <div>{props.title}</div>
         <div class="input-pannel">
-          <div class="input-amount"><input onChange={"SELL"==props.tradeside?handleChange:undefined} id={props.operationid} class="input-token-amount" placeholder="0" disabled={"BUY"==props.tradeside?true:false} value={"SELL"==props.tradeside?amount:props.amount}/></div>
+          <div class="input-amount"><input onChange={!props.disabled?handleChange:undefined} id={props.id} class="input-token-amount" placeholder="0" disabled={props.disabled} value={!props.disabled?amount:props.amount}/></div>
           <div class="token-repr">
-            <img class="token-logo" src={props.tokenicon}></img><span>{props.tokensymbol}</span>
+            <img class="token-logo" src={TOKENS[props.token].icon}></img><span>{TOKENS[props.token].symbol}</span>
           </div>
         </div>
         <div class="balance-pannel">
@@ -33,4 +37,6 @@ function TokenContainer(props) {
     );
 }
 
-export default TokenContainer;
+export default TokenContainer;  
+// disabled={"BUY"==props.tradeside?true:false
+// onChange={"SELL"==props.tradeside?handleChange:undefined}

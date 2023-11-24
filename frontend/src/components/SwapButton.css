@@ -1,0 +1,49 @@
+#swap-button:disabled, #swap-button:disabled:hover {
+    background-color: rgb(249, 249, 249);
+  }
+  #swap-button:disabled div {
+    font-size: 20px;
+    font-weight: 800;
+    color: rgb(206, 206, 206);
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+  }
+  #swap-button:hover {
+    background-color: rgb(251, 88, 255);
+  }
+  #swap-button{
+    background-color: rgb(252, 114, 255);
+    padding: 16px;
+    padding: 16px;
+    width: 100%;
+    line-height: 24px;
+    font-weight: 535;
+    text-align: center;
+    border-radius: 16px;
+    outline: none;
+    border: 1px solid transparent;
+    color: rgb(34, 34, 34);
+    text-decoration: none;
+    display: flex;
+    -moz-box-pack: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    -moz-box-align: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    will-change: transform;
+    transition: transform 450ms ease 0s;
+    transform: perspective(1px) translateZ(0px);
+  }
+  #swap-button div {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+  }
+  

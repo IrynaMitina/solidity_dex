@@ -1,0 +1,72 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+}
+a:hover {
+  background-color: #d2d9ee;
+  border-radius: 10px;
+  color: #222;
+} 
+a:active{
+  color: #222;
+}
+a.active{
+  color: #222;
+}
+a {
+  text-decoration: none;
+  padding: 12px;
+  color:#7d7d7d;
+}
+.account-pannel {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 1;
+  padding: 12px;
+}
+#navigation {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1;
+  padding: 12px;
+}
+.nav-item {
+  padding-right: 15px;
+  padding-right: 15px;
+}
+
+#account {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#connect-wallet-button:hover {
+  background-color: rgb(251, 88, 255);
+}
+#connect-wallet-button {
+  background-color: rgb(252, 114, 255);
+  justify-content: center;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid transparent;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: 10px;
+}
+#connect-wallet-button div{
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+}
