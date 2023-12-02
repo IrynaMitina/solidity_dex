@@ -4,8 +4,7 @@ import {address as TokenAddress, abi as TokenAbi} from "./TokenContract.js";
 
 const GAS_LIMIT = 8*10**8;
 
-async function fetchPoolReserves(window) {
-    const web3 = window.web3;
+async function fetchPoolReserves(web3) {
     const DexContract = new web3.eth.Contract(DexAbi, DexAddress);
     const reserves = await DexContract.methods.getReserves().call();
     return {
@@ -14,18 +13,16 @@ async function fetchPoolReserves(window) {
     };
   };
 
-async function getWalletAccount(window) {
-    const web3 = window.web3;
+async function getWalletAccount(web3) {
     const accounts = await web3.eth.getAccounts();
     return accounts[0];
-}
+}  
 
-async function fetchWalletBalances(window) {
-    const walletAccount = await getWalletAccount(window);
-    const web3 = window.web3;
-    const eth = await web3.eth.getBalance(walletAccount);
+async function fetchWalletBalances(web3) {
+    const account = await getWalletAccount(web3);
+    const eth = await web3.eth.getBalance(account);
     const TokenContract = new web3.eth.Contract(TokenAbi, TokenAddress);
-    const dvt = await TokenContract.methods.balanceOf(walletAccount).call();
+    const dvt = await TokenContract.methods.balanceOf(account).call();
     return {
         ethBalance: Web3.utils.fromWei(eth, "ether"),
         dvtBalance: Web3.utils.fromWei(dvt, "ether")
@@ -38,17 +35,13 @@ async function connectWallet(window) {
         return;
     };
     await window.ethereum.request({method: 'eth_requestAccounts'});
-    window.web3 = new Web3(window.ethereum); 
-}
+    const web3 = new Web3(window.ethereum); 
+    return web3;
+};
 
-function disconnectWallet(window) {
-    window.web3 = null;
-}
-
-async function trade(window, sellEthBuyToken, sellAmount, _from) {
+async function trade(web3, sellEthBuyToken, sellAmount, _from) {
     // sellEthBuyToken - bool (trade direction)
     // sellAmount in ETH or DVT
-    const web3 = window.web3;
     web3.eth.Contract.handleRevert = true;
     const amount = Web3.utils.toWei(sellAmount, "ether");
     const DexContract = new web3.eth.Contract(DexAbi, DexAddress);
@@ -68,9 +61,8 @@ async function trade(window, sellEthBuyToken, sellAmount, _from) {
     };
 }
 
-async function addLiquidityToPool(window, ethAmount, dvtAmount, _from) {
+async function addLiquidityToPool(web3, ethAmount, dvtAmount, _from) {
     // addLiquidity(uint _amount)
-    const web3 = window.web3;
     web3.eth.Contract.handleRevert = true;
     ethAmount = Web3.utils.toWei(ethAmount, "ether");
     dvtAmount = Web3.utils.toWei(dvtAmount, "ether");
@@ -87,7 +79,7 @@ async function addLiquidityToPool(window, ethAmount, dvtAmount, _from) {
 
 export {
     trade,
-    connectWallet, disconnectWallet,
+    connectWallet,
     fetchWalletBalances, getWalletAccount,
     fetchPoolReserves,
     addLiquidityToPool

@@ -1,70 +1,35 @@
 import './SwapPage.css';
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux'
 import * as dApp from "../contracts/interactions.js";
 import TokenContainer from '../components/TokenContainer';
 import Header from '../components/Header';
 import SwapButton from '../components/SwapButton';
 import SwapCurrencyButton from '../components/SwapCurrencyButton';
+import { refreshBalances } from '../components/walletSlice'
+import {refreshPoolReserves}  from '../components/LPSlice'
 
 function SwapPage() {
-    const [wallet, setWallet] = useState({ // wallet
-        account: '', 
-        ethBalance: '', 
-        dvtBalance: ''
-      });
+      const wallet = useSelector((state) => state.wallet);
+      const LP = useSelector((state) => state.pool);
+      const dispatch = useDispatch();
     
-      const [LP, setLP] = useState({ // Liquidity Pool
-        ethReserve: "",
-        dvtReserve: ""
-      });  
+ 
       const [price, setPrice] = useState("");
-    
       const [trade, setTrade] = useState({  // trade
-        sellEthBuyToken: true,
+        sellEthBuyToken: true,  // direction of trade
         sellAmount: null,
         buyAmount: null
       });
       const [insufficientFunds, setInsufficientFunds] = useState(false);
     
-      const ConnectWalletHandler = async (t) => {
-        t.preventDefault();
-        try {
-          if (!wallet.account) {
-            await dApp.connectWallet(window);
-            const walletAccount = await dApp.getWalletAccount(window);
-            setWallet({account: walletAccount, ethBalance: '', dvtBalance: ''});
-    
-            await refreshWalletBalances();
-            await refreshPoolReserves();
-          } else {
-            dApp.disconnectWallet(window);
-            setWallet({account: '', ethBalance: '', dvtBalance: ''});
-          }
-        } catch (error) {
-          console.log(error.message);
-        }
-      }
-    
-      async function refreshWalletBalances() {
-        console.log("refreshWalletBalances");
-        const walletBalances = await dApp.fetchWalletBalances(window);
-        setWallet((prev) => {
-          return {...prev, ethBalance: walletBalances.ethBalance, dvtBalance: walletBalances.dvtBalance }
-        });
-      };
-    
-      async function refreshPoolReserves() {
-        console.log("refreshPoolReserves");
-        const poolReserves = await dApp.fetchPoolReserves(window);
-        setLP(poolReserves);
-      };
     
       const swapHandler = async (t) => {
         console.log("swapHandler"); 
         console.log(trade);  
-        await dApp.trade(window, trade.sellEthBuyToken, trade.sellAmount, wallet.account);
-        await refreshWalletBalances();
-        await refreshPoolReserves();
+        await dApp.trade(wallet.web3, trade.sellEthBuyToken, trade.sellAmount, wallet.account);
+        dispatch(refreshBalances(wallet.web3));
+        dispatch(refreshPoolReserves(wallet.web3));
         t.preventDefault();  // prevent browser reload/refresh
       }
     
@@ -95,26 +60,22 @@ function SwapPage() {
     
       useEffect(() => { // calculate price depending on pool reserves
         console.log("calculate price");
-        setPrice(trade.sellEthBuyToken? LP.dvtReserve/LP.ethReserve: LP.ethReserve/LP.dvtReserve);
+        console.log(LP);
+        if (LP.dvtReserve && LP.ethReserve) {
+          setPrice(trade.sellEthBuyToken? LP.dvtReserve/LP.ethReserve: LP.ethReserve/LP.dvtReserve);
+        }
       }, [LP, trade.sellEthBuyToken]);
     
       useEffect(() => { // check insufficient funds
         console.log("check insufficient funds");
         setInsufficientFunds(
-          wallet.account && trade.sellAmount > (trade.sellEthBuyToken?wallet.ethBalance:wallet.dvtBalance)
+          wallet.account && trade.sellAmount > (trade.sellEthBuyToken?wallet.thBalance:wallet.dvtBalance)
         );
       }, [wallet, trade.sellAmount]);
     
-      function truncateAddress(addr) {
-        if (addr) {
-          return addr.substring(0,6) + '...' + addr.substring(addr.length-4,addr.length-1);
-        };
-        return "";
-      };
-    
       return (
       <React.Fragment>
-        <Header account={truncateAddress(wallet.account)} onClick={ConnectWalletHandler}/>
+        <Header/>
         <div id="swap-container">
           <div id="swap-header">
             <div>Swap</div>

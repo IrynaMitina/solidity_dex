@@ -1,67 +1,30 @@
 
 import './PoolPage.css';
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux'
 import * as dApp from "../contracts/interactions.js";
 import TokenContainer from '../components/TokenContainer';
 import Header from '../components/Header';
 import SwapButton from '../components/SwapButton';
+import { refreshBalances } from '../components/walletSlice'
+import {refreshPoolReserves}  from '../components/LPSlice'
 
 function PoolPage() {
-    const [wallet, setWallet] = useState({ // wallet
-        account: '', 
-        ethBalance: '', 
-        dvtBalance: ''
-      });
-    
-      const [LP, setLP] = useState({ // Liquidity Pool
-        ethReserve: "",
-        dvtReserve: ""
-      });  
-    
+      const wallet = useSelector((state) => state.wallet);
+      const LP = useSelector((state) => state.pool);
+      const dispatch = useDispatch();
+
       const [addition, setAddition] = useState({  // Addition to LP
         ethAmount: null,
         dvtAmount: null,
       });
       const [insufficientFunds, setInsufficientFunds] = useState(false);
     
-      const ConnectWalletHandler = async (t) => {
-        t.preventDefault();
-        try {
-          if (!wallet.account) {
-            await dApp.connectWallet(window);
-            const walletAccount = await dApp.getWalletAccount(window);
-            setWallet({account: walletAccount, ethBalance: '', dvtBalance: ''});
-    
-            await refreshWalletBalances();
-            await refreshPoolReserves();
-          } else {
-            dApp.disconnectWallet(window);
-            setWallet({account: '', ethBalance: '', dvtBalance: ''});
-          }
-        } catch (error) {
-          console.log(error.message);
-        }
-      }
-    
-      async function refreshWalletBalances() {
-        console.log("refreshWalletBalances");
-        const walletBalances = await dApp.fetchWalletBalances(window);
-        setWallet((prev) => {
-          return {...prev, ethBalance: walletBalances.ethBalance, dvtBalance: walletBalances.dvtBalance }
-        });
-      };
-    
-      async function refreshPoolReserves() {
-        console.log("refreshPoolReserves");
-        const poolReserves = await dApp.fetchPoolReserves(window);
-        setLP(poolReserves);
-      };
-    
       const addLiquidityHandler = async (t) => {
         console.log("addLiquidityHandler"); 
-        await dApp.addLiquidityToPool(window, addition.ethAmount, addition.dvtAmount, wallet.account);
-        await refreshWalletBalances();
-        await refreshPoolReserves();
+        await dApp.addLiquidityToPool(wallet.web3, addition.ethAmount, addition.dvtAmount, wallet.account);
+        dispatch(refreshBalances(wallet.web3));
+        dispatch(refreshPoolReserves(wallet.web3));
         t.preventDefault();  // prevent browser reload/refresh
       }
     
@@ -83,16 +46,9 @@ function PoolPage() {
         );
       }, [wallet, addition]);
     
-      function truncateAddress(addr) {
-        if (addr) {
-          return addr.substring(0,6) + '...' + addr.substring(addr.length-4,addr.length-1);
-        };
-        return "";
-      };
-    
       return (
       <React.Fragment>
-        <Header account={truncateAddress(wallet.account)} onClick={ConnectWalletHandler}/>
+        <Header/>
         <div id="add-liquidity-container">
           <div id="add-liquidity-header">
             <div>Add Liquidity</div>
